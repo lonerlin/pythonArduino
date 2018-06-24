@@ -109,7 +109,7 @@ def create_table(conn, sql):
             print('执行sql:[{}]'.format(sql))
         cu.execute(sql)
         conn.commit()
-        print('创建数据库表[student]成功!')
+        print('创建数据库表成功!')
         close_all(conn, cu)
     else:
         print('the [{}] is empty or equal None!'.format(sql))
@@ -303,6 +303,7 @@ def create_devices():
     print('删除数据库表测试...')
     conn = get_conn(DB_FILE_PATH)
     drop_table(conn, 'devices')
+    drop_table(conn,'readyOnlyData')
     print("创建设备表：")
     create_table_sql= '''CREATE TABLE `devices` (
                           `id`   INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -312,8 +313,16 @@ def create_devices():
                           `state` int(1) ,
                           `value` float  
                         )'''
+    create_readyonly_sql = '''CREATE TABLE readyOnlyData (
+                          id INTEGER PRIMARY KEY AUTOINCREMENT,
+                          sensorID int(11) NOT NULL,
+                          value FLOAT ,
+                          updateTime TIMESTAMP 
+                        )
+                      '''
     conn=get_conn(DB_FILE_PATH)
     create_table(conn,create_table_sql)
+    create_table(conn,create_readyonly_sql)
 def insert_devices():
     sql=''' insert into devices (userID, deviceID, sensorID, state, value) 
     VALUES (1,1,1,0,0);
