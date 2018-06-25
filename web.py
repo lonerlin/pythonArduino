@@ -40,15 +40,15 @@ def deviceroute():
     deviceid=request.args.get("deviceid",0)
     userid=request.args.get("userid",0)
     sensorid=request.args.get("sensorid",0)
-    command=request.args.get("command","")
+    command=request.args.get("cmd","")
     value=request.args.get("value",0)
     state=request.args.get("state",-1)
     print( str(deviceid) + ' '+str(userid) + ' '+ str(sensorid))
     #return "state:" + str(device.findState(userid,deviceid,sensorid))
 
-    if (command=='get'):
+    if (command=='publish'):
         getState(userid,device,sensorid)
-    elif(command=='set'):
+    elif(command=='upload'):
         setReadOnleValue(sensorid,value)
     else:
         pass
