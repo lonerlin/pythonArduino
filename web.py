@@ -24,14 +24,18 @@ def index():
         print(data)
         device.updateDevice(1, 1, 1, data)
         return render_template('index.html', state=ledState,sColor=sColor)
-    r=device.findSensor(1,1,1)
-    if(r[0][0]):
-        ledState='OFF'
-        sColor='red'
     else:
+        r=device.findSensor(1,1,1)
         ledState='ON'
         sColor='black'
-    return render_template('index.html', state=ledState, sColor=sColor)
+        if(len(r)>0):
+            if(r[0][0]):
+                ledState='OFF'
+                sColor='red'
+            else:
+                ledState='ON'
+                sColor='black'
+        return render_template('index.html', state=ledState, sColor=sColor)
 
 
 
