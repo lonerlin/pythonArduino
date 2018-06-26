@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for,session
 import db
 import device
 
@@ -44,17 +44,20 @@ def deviceroute():
     value=request.args.get("value",0)
     state=request.args.get("state",-1)
     print( str(deviceid) + ' '+str(userid) + ' '+ str(sensorid))
-    #return "state:" + str(device.findState(userid,deviceid,sensorid))
 
     if (command=='publish'):
         getState(userid,device,sensorid)
     elif(command=='upload'):
         setReadOnleValue(sensorid,value)
-    else:
-        pass
+        return "cmd=upload&res=1"
+    elif(command=='subscribe'):
+        session['userID']=userid
+        return "cmd=subscribe&res=1"
 
-def getState(userid,deviceid,sensorid):
-    return "sensorid:" +str(sensorid) + "state:" + str(device.findState(userid,deviceid,sensorid))+ ";"
+
+def getState(userid, deviceid, sensorid):
+    return "cmd=publish&sensorID=%d&state=%d" % (sensorid,device.findState(userid,deviceid,sensorid))
+
 
 def setReadOnleValue(sensorid,value):
     device.addValue(sensorid,value)

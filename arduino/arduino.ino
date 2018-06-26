@@ -6,11 +6,15 @@
 #define DHT11_TID "3"
 #define DHT11_HID "4"
 #define LED1PIN 2
-#define LED2PIN 3
+#define LED2PIN 9
+#define DHT11_PIN  4 //温湿度传感器接UNO的gpio2
+#define RELAYS_ON "1"
+#define RELAYS_OFF "0"
+
 
 #define KEY "a53b177974c6705d5235e755fe8bb397" //用户KEY
 
-#include<dht11.h>
+#include <dht11.h>
 dht11 DHT11;
 #include <SoftwareSerial.h>
 SoftwareSerial DebugSerial(10, 11);//rx tx
@@ -26,7 +30,74 @@ unsigned long updataTick=millis();
 unsigned long subscribeTick=millis();
 bool subscribeFlag =false;
 
+/*
+  检查并读取串口收到的数据
+*/
+void doUartTick()
+{
+  
+  if (Serial.available())
+  {
+    buffUart[buffUartIndex++] = Serial.read();
+    preUartTick = millis();
+    if(buffUartIndex>=MAX_PACKETSIZE - 1){
+      buffUartIndex = MAX_PACKETSIZE-2;
+      preUartTick = preUartTick - 200;
+    }
+  }
+  if(buffUartIndex>0 && (millis() - preUartTick>=100))
+  {
+    buffUart[buffUartIndex]=0x00;
+    //Serial.flush();
+    parseUartPackage(buffUart,buffUartIndex);
+    buffUartIndex = 0;
+  }
+}    
+/*
+  处理串口收到的数据
+ */
+void parseUartPackage(char *p,size_t len)
+{
+  DebugSerial.println("[UART Read:]");
+  DebugSerial.println(p);
+  
+ if (strstr(p,"cmd=upload&res=1") != NULL)
+  {   
+      DebugSerial.println("upload successful...");
+  }
+  else if (strstr(p,"cmd=subscribe&res=1") != NULL)
+  {
+      subscribeFlag=true;
+      DebugSerial.println("Subscribe uid successful...");
+  }
+  else
+  {
+        setDigitalPin(p,LED1ID,LED1PIN);
+        setDigitalPin(p,LED2ID,LED2PIN);
+  }
 
+}
+
+void setDigitalPin(char *p,String sensorID,int pin)
+{
+     char relaysStr[64]; memset(relaysStr,0,64);
+      sprintf(relaysStr,"cmd=publish&sensorID=%s&state=",sensorID.c_str());
+    if (strstr(p,relaysStr) != NULL)
+    {
+        
+        if (strstr(p+strlen(relaysStr),RELAYS_ON) != NULL)
+      {
+        digitalWrite(pin, HIGH); //打开继电器
+        DebugSerial.println("open relays!");
+      }
+      else if (strstr(p+strlen(relaysStr),RELAYS_OFF) != NULL)
+      {
+        digitalWrite(pin, LOW); //关闭继电器
+        DebugSerial.println("Close relays!");
+      }
+    }
+}
+     
 /*
   * 发送数据到串口
  */
@@ -47,7 +118,18 @@ void sendUART(char *p)
   Serial.print(p);
 }
 
-
+/*
+  订阅用户，用于接受数据
+ */
+void doSubscribe()
+{
+  if( !subscribeFlag && millis() - subscribeTick > 1000 ) {
+    subscribeTick=millis();
+      char suid[64]; memset(suid,0,64);
+    sprintf(suid , "cmd=subscribe&userID=%s\r\n" , UID);
+    sendUART(suid);
+  }
+}
 /*
   读取传感器数据并上传
  */
@@ -88,12 +170,13 @@ void doUpdata()
 void setup() {
   // put your setup code here, to run once:
 Serial.begin(9600);
+DebugSerial.begin(9600);
   pinMode(LED1PIN ,OUTPUT);
   pinMode(LED2PIN ,OUTPUT);
+  digitalWrite(LED1PIN,HIGH);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  Serial.println("Hello world");
-  delay(500);
+  //doUpdata();
+  doUartTick();
 }
