@@ -1,12 +1,32 @@
 from flask import Flask, render_template, request, redirect, url_for,session
 import db
 import device
+import time
+from gpcharts import figure
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = '123456'
 #app.config['DEBUG'] = True
 dbPath='webDB.db'
 
+@app.route('/chart/<int:sensorid>', methods = ['POST', 'GET'])
 
+def buildChart(sensorid):
+    r=device.getValue(sensorid)
+    if(len(r)>0):
+        fig3 = figure()
+        fig3.title = 'Weather over Days'
+        fig3.ylabel = 'Temperature'
+        # modify size of graph
+        fig3.height = 800
+        fig3.width = 1200
+        xVals=['时间']
+        yVals=['温度']
+        for value in r:
+            xVals.append(value[1][11:19])
+            yVals.append(value[0])
+        fig3.plot(xVals,yVals)
+    return None
 @app.route('/control/', methods = ['POST', 'GET'])
 
 def index():
