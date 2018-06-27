@@ -61,8 +61,9 @@ def ledSwitch(sensorid,state):
     device.updateDevice(1,1,sensorid,state)
     return  redirect('/control/')
 
-@app.route('/', methods = ['POST', 'GET'])
+@app.route('/')
 def deviceroute():
+    print(request.values)
     deviceid=request.args.get("deviceid",0)
     userid=request.args.get("userid",0)
     sensorid=request.args.get("sensorid",0)

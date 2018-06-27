@@ -81,7 +81,7 @@ void parseUartPackage(char *p,size_t len)
 void setDigitalPin(char *p,String sensorID,int pin)
 {
      char relaysStr[64]; memset(relaysStr,0,64);
-      sprintf(relaysStr,"cmd=publish&sensorID=%s&state=",sensorID.c_str());
+      sprintf(relaysStr,"cmd=publish&sensorid=%s&state=",sensorID.c_str());
     if (strstr(p,relaysStr) != NULL)
     {
         
@@ -126,7 +126,7 @@ void doSubscribe()
   if( !subscribeFlag && millis() - subscribeTick > 1000 ) {
     subscribeTick=millis();
       char suid[64]; memset(suid,0,64);
-    sprintf(suid , "cmd=subscribe&userID=%s\r\n" , UID);
+    sprintf(suid , "http://10.12.8.14:5000/?cmd=subscribe&userid=%s\n\r" , UID);
     sendUART(suid);
   }
 }
@@ -156,11 +156,11 @@ void doUpdata()
       }
 
       char str[128]; memset(str,0,128);
-      sprintf(str, "cmd=upload&deviceID=%s&value=%d\r\n", 
+      sprintf(str, "cmd=upload&sensorid=%s&value=%d\r\n", 
         DHT11_TID , (int)DHT11.temperature);
       sendUART(str);
       memset(str,0,128);
-      sprintf(str, "cmd=upload&deviceID=%s&value=%d\r\n", 
+      sprintf(str, "cmd=upload&sensorid=%s&value=%d\r\n", 
         DHT11_HID , (int)DHT11.humidity);
       sendUART(str);
   }
@@ -177,6 +177,7 @@ DebugSerial.begin(9600);
 }
 
 void loop() {
+  doSubscribe();
   //doUpdata();
-  doUartTick();
+  //doUartTick();
 }
