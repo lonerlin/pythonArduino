@@ -9,12 +9,12 @@ def updateDevice(userid, deviceid, sensorid, state=0, value=0):
         
         sql_update =''' UPDATE devices SET state = ?, value=? 
                   WHERE (userID=? and deviceID=? and sensorID=?)  '''
-        db.update(db.get_conn(DBPath), sql_update, (state, value, userid, deviceid, sensorid))
+        db.update(db.get_conn(DBPath), sql_update, [(state, value, userid, deviceid, sensorid)])
     else:
         sql_insert = ''' insert into devices (userID, deviceID, sensorID, state, value) 
             VALUES (?,?,?,?,?);
             '''
-        db.save(db.get_conn(DBPath), sql_insert, (userid, deviceid, sensorid, state, value))
+        db.save(db.get_conn(DBPath), sql_insert, [(userid, deviceid, sensorid, state, value)])
 
 
 def findSensor(userid, deviceid, sensorid):

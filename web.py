@@ -13,6 +13,7 @@ dbPath='webDB.db'
 
 def buildTable(sensorid):
     r = device.getValue(sensorid)
+    print(len(r))
     if (len(r) > 0):
         return render_template('table.html', table=r)
     return None
@@ -30,8 +31,8 @@ def buildChart(sensorid):
         xVals=['时间']
         yVals=['温度']
         for value in r:
-            xVals.append(value[1][11:19])
-            yVals.append(value[0])
+            xVals.append(value[3][11:19])
+            yVals.append(value[2])
         fig3.plot(xVals,yVals)
     return None
 
