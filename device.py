@@ -43,13 +43,27 @@ def findValue(userid, deviceid, sensorid):
 
 def addValue(sensorid, value):
     sql_select = ''' insert into readyOnlyData (sensorID, value,updateTime)  
-                  values(?,?,datetime.datetime.now()) 
+                  values(?,?,?) 
               '''
-    db.save(db.get_conn(DBPath), sql_select, [(sensorid, value)])
+    db.save(db.get_conn(DBPath), sql_select, [(sensorid, value, datetime.datetime.now())])
 
 
 def getValue(sensorid):
-    sql_select = '''select * from readyOnlyData
-            where SensorID=?
+    sql_select = '''select value,updateTime from readyOnlyData
+            where SensorID=? Limit 10
             '''
     return db.fetchone(db.get_conn(DBPath), sql_select, [sensorid])
+
+
+
+
+def testUpdate():
+    updateDevice(1,1,1,1,234)
+def testAddReadOnlyData():
+    addValue(1,41)
+def main():
+    testAddReadOnlyData()
+
+
+if __name__ == '__main__':
+    main()
