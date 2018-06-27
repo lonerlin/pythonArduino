@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<table border="1" cellspacing="0" cellpadding="0" >
+    <tr ><th > ID </th><th>用户ID</th><th>数 值</th><th> 时 间 </th></tr>
+    {% for row in table %}
+    <tr>
+        {% for data in row %}
+            <td width="auto">{{ data }}</td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+</br>
+<input type="button" value="生成图表" onclick="javascript:window.location.href='/chart/4'" />
+<img width="30" height="30" src={{url_for('static',filename='picture/b14.ico')}} />
+
+</body>
+</html>

@@ -49,7 +49,7 @@ def addValue(sensorid, value):
 
 
 def getValue(sensorid):
-    sql_select = '''select value,updateTime from readyOnlyData
+    sql_select = '''select * from readyOnlyData
             where SensorID=? Limit 10
             '''
     return db.fetchone(db.get_conn(DBPath), sql_select, [sensorid])

@@ -6,9 +6,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-<form action="/control/" method="post">
-    <input type="submit" name="submit" value="TURN {{state}}" style="color: {{sColor}}"/>
+<table>
 
-</form>
+    <tr><td>LED1</td><td>{%if (state1==0) %}
+        <img width="30" height="30" src={{url_for('static',filename='picture/b14.ico')}} />
+        {% else %}
+        <img width="30" height="30" src={{url_for('static',filename='picture/b15.ico')}} />
+        {% endif %}</td>
+
+        <td><input type="button" value="LED1" onclick="window.location.href='/control/1/{{state1}}'" /> </td></tr>
+    <tr><td>LED2</td><td>{%if (state2==0) %}
+        <img width="30" height="30" src={{url_for('static',filename='picture/b14.ico')}} />
+        {% else %}
+        <img width="30" height="30" src={{url_for('static',filename='picture/b15.ico')}} />
+        {% endif %}</td>
+
+        <td><input type="button" value="LED2" onclick="window.location.href='/control/2/{{state2}}'" /> </td></tr>
+    <tr></tr>
+    <tr><td>Sensor1</td><td></td><td><input type="button" value="Sensor1" onclick="window.location.href='/table/1'" /> </td></tr>
+</table>
 </body>
 </html>
