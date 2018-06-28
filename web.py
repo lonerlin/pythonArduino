@@ -63,14 +63,7 @@ def ledSwitch(sensorid,state):
 
 @app.route('/')
 def deviceroute():
-    for x in request.headers:
-        print(x)
-    for x in request.args:
-        print(x)
-    for x in request.values:
-        print(x)
-    return None
-    '''
+
     print(request.values)
     deviceid=request.args.get("deviceid",0)
     userid=request.args.get("userid",0)
@@ -88,14 +81,14 @@ def deviceroute():
     elif(command=='subscribe'):
         session['userID']=userid
         return "cmd=subscribe&res=1"
-    '''
+
 
 def getState(userid, deviceid, sensorid):
-    return "cmd=publish&sensorID=%d&state=%d" % (sensorid,device.findState(userid,deviceid,sensorid))
+    return "cmd=publish&sensorid=%d&state=%d" % (sensorid,device.findState(userid,deviceid,sensorid))
 
 
 def setReadOnleValue(sensorid,value):
     device.addValue(sensorid,value)
     return "sensorid:"+ str(sensorid) + "write:ok;"
 if __name__ == "__main__":
-	app.run(host='0.0.0.0',debug=True)
+	app.run(host='0.0.0.0', port=5001,debug=True)
