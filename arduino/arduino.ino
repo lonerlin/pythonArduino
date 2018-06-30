@@ -28,7 +28,7 @@ unsigned long preUartTick=millis();
 unsigned long updataTick=millis();
 
 unsigned long subscribeTick=millis();
-bool subscribeFlag =false;
+bool subscribeFlag =true;
 
 /*
   检查并读取串口收到的数据
@@ -58,8 +58,8 @@ void doUartTick()
  */
 void parseUartPackage(char *p,size_t len)
 {
-  DebugSerial.println("[UART Read:]");
-  DebugSerial.println(p);
+ // DebugSerial.println("[UART Read:]");
+ // DebugSerial.println(p);
   
  if (strstr(p,"cmd=upload&res=1") != NULL)
   {   
@@ -81,16 +81,21 @@ void parseUartPackage(char *p,size_t len)
 void setDigitalPin(char *p,String sensorID,int pin)
 {
      char relaysStr[64]; memset(relaysStr,0,64);
+     
+      
       sprintf(relaysStr,"cmd=publish&sensorid=%s&state=",sensorID.c_str());
+      //DebugSerial.println(relaysStr);
     if (strstr(p,relaysStr) != NULL)
     {
+        DebugSerial.print(sensorID);
+        DebugSerial.println(strstr(p,relaysStr));
         
-        if (strstr(p+strlen(relaysStr),RELAYS_ON) != NULL)
+        if (strstr(strstr(p,"sensorid=")+strlen(relaysStr),RELAYS_ON) != NULL)
       {
         digitalWrite(pin, HIGH); //打开继电器
         DebugSerial.println("open relays!");
       }
-      else if (strstr(p+strlen(relaysStr),RELAYS_OFF) != NULL)
+      else if (strstr(strstr(p,relaysStr)+strlen(relaysStr),RELAYS_OFF) != NULL)
       {
         digitalWrite(pin, LOW); //关闭继电器
         DebugSerial.println("Close relays!");
@@ -103,8 +108,8 @@ void setDigitalPin(char *p,String sensorID,int pin)
  */
 void sendUART(char *p,size_t len)
 {
-  DebugSerial.println("[UART send:]");
-  DebugSerial.println(p);
+  //DebugSerial.println("[UART send:]");
+  //DebugSerial.println(p);
   Serial.write(p,len);
 }
 
@@ -113,8 +118,8 @@ void sendUART(char *p,size_t len)
  */
 void sendUART(char *p)
 {
-  DebugSerial.println("[UART send:]");
-  DebugSerial.println(p);
+  //DebugSerial.println("[UART send:]");
+  //DebugSerial.println(p);
   Serial.print(p);
 }
 
@@ -123,10 +128,14 @@ void sendUART(char *p)
  */
 void doSubscribe()
 {
-  if( !subscribeFlag && millis() - subscribeTick > 1000 ) {
+  if(  millis() - subscribeTick > 2000 ) {
     subscribeTick=millis();
       char suid[64]; memset(suid,0,64);
-    sprintf(suid , "http://10.12.8.14:5000/?cmd=subscribe&userid=%s\n\r" , UID);
+    //sprintf(suid , "cmd=subscribe&userid=%s\n\r" , UID);
+    sprintf(suid , "cmd=publish&userid=%s&sensorid=1" , UID);
+    sendUART(suid);
+    delay(500);
+    sprintf(suid , "cmd=publish&userid=%s&sensorid=2" , UID);
     sendUART(suid);
   }
 }
@@ -135,7 +144,7 @@ void doSubscribe()
  */
 void doUpdata()
 {
-  if(millis()-updataTick >5*1000){//5s上传一次数据
+  if(millis()-updataTick >2*1000){//5s上传一次数据
     updataTick=millis();
 
     int chk = DHT11.read(DHT11_PIN);
@@ -179,5 +188,5 @@ DebugSerial.begin(9600);
 void loop() {
   doSubscribe();
   //doUpdata();
-  //doUartTick();
+  doUartTick();
 }

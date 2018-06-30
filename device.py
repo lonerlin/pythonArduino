@@ -50,7 +50,8 @@ def addValue(sensorid, value):
 
 def getValue(sensorid):
     sql_select = '''select * from readyOnlyData
-            where SensorID=? Limit 10
+            where SensorID=? order by id desc 
+            Limit 20 
             '''
     return db.fetchone(db.get_conn(DBPath), sql_select, [sensorid])
 

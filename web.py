@@ -64,31 +64,9 @@ def ledSwitch(sensorid,state):
 @app.route('/')
 def deviceroute():
 
-    print(request.values)
-    deviceid=request.args.get("deviceid",0)
-    userid=request.args.get("userid",0)
-    sensorid=request.args.get("sensorid",0)
-    command=request.args.get("cmd","")
-    value=request.args.get("value",0)
-    state=request.args.get("state",-1)
-    print( str(deviceid) + ' '+str(userid) + ' '+ str(sensorid))
-
-    if (command=='publish'):
-        getState(userid,device,sensorid)
-    elif(command=='upload'):
-        setReadOnleValue(sensorid,value)
-        return "cmd=upload&res=1"
-    elif(command=='subscribe'):
-        session['userID']=userid
-        return "cmd=subscribe&res=1"
+   pass
 
 
-def getState(userid, deviceid, sensorid):
-    return "cmd=publish&sensorid=%d&state=%d" % (sensorid,device.findState(userid,deviceid,sensorid))
 
-
-def setReadOnleValue(sensorid,value):
-    device.addValue(sensorid,value)
-    return "sensorid:"+ str(sensorid) + "write:ok;"
 if __name__ == "__main__":
 	app.run(host='0.0.0.0', port=5001,debug=True)
