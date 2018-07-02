@@ -42,18 +42,18 @@ def findValue(userid, deviceid, sensorid):
 
 
 def addValue(sensorid, value):
-    sql_select = ''' insert into readyOnlyData (sensorID, value,updateTime)  
+    sql_select = ''' insert into readOnlyData (sensorID, value,updateTime)  
                   values(?,?,?) 
               '''
     db.save(db.get_conn(DBPath), sql_select, [(sensorid, value, datetime.datetime.now())])
 
 
-def getValue(sensorid):
-    sql_select = '''select * from readyOnlyData
+def getValue(sensorid,top=20):
+    sql_select = '''select * from readOnlyData
             where SensorID=? order by id desc 
-            Limit 20 
+            Limit ? 
             '''
-    return db.fetchone(db.get_conn(DBPath), sql_select, [sensorid])
+    return db.fetchone(db.get_conn(DBPath), sql_select, [sensorid,top])
 
 
 

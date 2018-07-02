@@ -303,7 +303,7 @@ def create_devices():
     print('删除数据库表测试...')
     conn = get_conn(DB_FILE_PATH)
     drop_table(conn, 'devices')
-    drop_table(conn,'readyOnlyData')
+    drop_table(conn,'readOnlyData')
     print("创建设备表：")
     create_table_sql= '''CREATE TABLE `devices` (
                           `id`   INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -313,7 +313,7 @@ def create_devices():
                           `state` int(1) ,
                           `value` float  
                         )'''
-    create_readyonly_sql = '''CREATE TABLE readyOnlyData (
+    create_readyonly_sql = '''CREATE TABLE readOnlyData (
                           id INTEGER PRIMARY KEY AUTOINCREMENT,
                           sensorID int(11) NOT NULL,
                           value FLOAT ,
