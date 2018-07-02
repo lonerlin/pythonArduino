@@ -5,13 +5,16 @@ import device
 
 def echo(ip,queue,data):
 
-    redata=(analyzeData(data)+'\r\n').encode('utf-8')
+    redata=(analyzeData(data)+'\n\r').encode('utf-8')
 
     queue.put(redata)
 
 
 def analyzeData(data):
-    cmd=parse.parse_qs(data.decode('utf-8').strip())
+    s=data.decode('utf-8');
+    s=s[0:s.find("\n\r")]
+    print(s)
+    cmd=parse.parse_qs(s)
     print (cmd)
     command = cmd['cmd'][0]
     sensorid=int(cmd['sensorid'][0])

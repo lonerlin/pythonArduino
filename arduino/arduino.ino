@@ -8,8 +8,8 @@
 #define LED1PIN 2
 #define LED2PIN 9
 #define DHT11_PIN  4 //温湿度传感器接UNO的gpio2
-#define RELAYS_ON "1"
-#define RELAYS_OFF "0"
+#define RELAYS_ON '1'
+#define RELAYS_OFF '0'
 
 
 #define KEY "a53b177974c6705d5235e755fe8bb397" //用户KEY
@@ -88,14 +88,17 @@ void setDigitalPin(char *p,String sensorID,int pin)
     if (strstr(p,relaysStr) != NULL)
     {
         DebugSerial.print(sensorID);
-        DebugSerial.println(strstr(p,relaysStr));
-        
-        if (strstr(strstr(p,"sensorid=")+strlen(relaysStr),RELAYS_ON) != NULL)
+        DebugSerial.print(":");
+      
+        String s=strstr(strstr(p,relaysStr),"state=");
+       DebugSerial.println(s);
+       DebugSerial.println(s.charAt(6));
+        if (s.charAt(6)==RELAYS_ON)
       {
         digitalWrite(pin, HIGH); //打开继电器
         DebugSerial.println("open relays!");
       }
-      else if (strstr(strstr(p,relaysStr)+strlen(relaysStr),RELAYS_OFF) != NULL)
+      else if (s.charAt(6)==RELAYS_OFF)
       {
         digitalWrite(pin, LOW); //关闭继电器
         DebugSerial.println("Close relays!");
@@ -132,10 +135,10 @@ void doSubscribe()
     subscribeTick=millis();
       char suid[64]; memset(suid,0,64);
     //sprintf(suid , "cmd=subscribe&userid=%s\n\r" , UID);
-    sprintf(suid , "cmd=publish&userid=%s&sensorid=1" , UID);
+    sprintf(suid , "cmd=publish&userid=%s&sensorid=1\n\r" , UID);
     sendUART(suid);
     delay(500);
-    sprintf(suid , "cmd=publish&userid=%s&sensorid=2" , UID);
+    sprintf(suid , "cmd=publish&userid=%s&sensorid=2\n\r" , UID);
     sendUART(suid);
   }
 }
@@ -144,7 +147,7 @@ void doSubscribe()
  */
 void doUpdata()
 {
-  if(millis()-updataTick >2*1000){//5s上传一次数据
+  if(millis()-updataTick >5*1000){//5s上传一次数据
     updataTick=millis();
 
     int chk = DHT11.read(DHT11_PIN);
@@ -165,11 +168,12 @@ void doUpdata()
       }
 
       char str[128]; memset(str,0,128);
-      sprintf(str, "cmd=upload&sensorid=%s&value=%d\r\n", 
+      sprintf(str, "cmd=upload&sensorid=%s&value=%d\n\r", 
         DHT11_TID , (int)DHT11.temperature);
       sendUART(str);
+      delay(500);
       memset(str,0,128);
-      sprintf(str, "cmd=upload&sensorid=%s&value=%d\r\n", 
+      sprintf(str, "cmd=upload&sensorid=%s&value=%d\n\r", 
         DHT11_HID , (int)DHT11.humidity);
       sendUART(str);
   }
@@ -187,6 +191,6 @@ DebugSerial.begin(9600);
 
 void loop() {
   doSubscribe();
-  //doUpdata();
+  doUpdata();
   doUartTick();
 }
