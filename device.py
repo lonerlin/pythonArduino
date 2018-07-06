@@ -63,7 +63,7 @@ def testUpdate():
 def testAddReadOnlyData():
     addValue(1,41)
 def main():
-    testAddReadOnlyData()
+    getValue(3,1000)
 
 
 if __name__ == '__main__':

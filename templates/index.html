@@ -4,11 +4,74 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body>
-<table>
 
-    <tr><td>LED1</td><td>{%if (state1==0) %}
+    <style type="text/css">
+.main {
+	margin: 0 auto;
+	width: 0 auto;
+	overflow: hidden;
+
+}
+.top {
+	background-color: #FFFFFF;
+	height: 120px;
+	opacity: 0.7;
+	margin:20px;
+}
+body {
+
+}
+.left {
+	float: left;
+	height: 250px;
+	width: 320px;
+	margin: 30px;
+	background-color: #FFF;
+	opacity:0.8;
+}
+.middle {
+	float:left;
+	height: 300px;
+	width:250px;
+	background-color: #FFF;
+	opacity: 0.7;
+	margin: 30px;
+}
+.right {
+	float: left;
+	height: 300px;
+	width: 250px;
+	margin: 30px;
+	opacity:0.7;
+	background-color: #FFF;
+}
+
+.header {
+	font-family: "宋体";
+	font-size: 36px;
+	border-top-color: #000;
+	border-right-color: #000;
+	border-bottom-color: #000;
+	border-left-color: #000;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+	margin-left: 50px;
+	position: absolute;
+	clip: rect(auto,auto,auto,auto);
+	left: 50px;
+	top: 60px;
+}
+</style>
+
+</head>
+<body background="{{url_for('static',filename='picture/bg.jpeg')}}">
+
+<div class="main">
+	<div class="top">
+    	<div class="header"><img src={{url_for('static',filename='picture/icon.jpg')}} width="50" height="50" style="vertical-align:middle;opacity:0.7" />Arduino WIFI测试</div>
+  </div>
+  <div class="left"><table><tr><td>LED1</td><td>{%if (state1==0) %}
         <img width="30" height="30" src={{url_for('static',filename='picture/b14.ico')}} />
         {% else %}
         <img width="30" height="30" src={{url_for('static',filename='picture/b15.ico')}} />
@@ -24,6 +87,12 @@
         <td><input type="button" value="LED2" onclick="window.location.href='/control/2/{{state2}}'" /> </td></tr>
     <tr></tr>
     <tr><td>Sensor1</td><td></td><td><input type="button" value="Sensor1" onclick="window.location.href='/table/3'" /> </td></tr>
-</table>
+    <tr><td>生成EXCEL</td><td></td><td><input type="button" value="生成EXCEL" onclick="window.location.href='/excel/3'" /> </td></tr>
+  </table>
+  </div>
+
+</div>
+
+
 </body>
 </html>

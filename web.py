@@ -2,12 +2,18 @@ from flask import Flask, render_template, request, redirect, url_for,session
 import db
 import device
 import time
+import exportExcel
 from gpcharts import figure
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '123456'
 #app.config['DEBUG'] = True
 dbPath='webDB.db'
+
+@app.route('/excel/<int:sensorid>', methods = ['POST', 'GET'])
+def getExcel(sensorid):
+    return exportExcel.excelExport(sensorid,500)
+
 
 @app.route('/table/<int:sensorid>', methods = ['POST', 'GET'])
 
